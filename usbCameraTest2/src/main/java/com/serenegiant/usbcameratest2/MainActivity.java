@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
@@ -77,7 +79,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 	private int mCaptureState = 0;
 	private Surface mPreviewSurface;
-
+	private String videoPath;
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -324,6 +326,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 				@Override
 				public void run() {
 					final String path = getCaptureFile(Environment.DIRECTORY_MOVIES, ".mp4");
+					videoPath = path;
 					if (!TextUtils.isEmpty(path)) {
 						mEncoder = new SurfaceEncoder(path);
 						mEncoder.setEncodeListener(mEncodeListener);
@@ -358,6 +361,11 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 					mEncoder.stopRecording();
 					mEncoder = null;
 				}
+				Intent resultIntent = new Intent();
+// TODO Add extras or a data URI to this intent as appropriate.
+				resultIntent.putExtra("FILE_PATH", videoPath);
+				setResult(Activity.RESULT_OK, resultIntent);
+				finish();
 			}
 		}, 0);
 	}
