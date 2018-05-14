@@ -36,6 +36,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -43,7 +44,9 @@ import android.view.TextureView.SurfaceTextureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluesquarehub.microcam.R;
@@ -73,23 +76,55 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	private SimpleUVCCameraTextureView mUVCCameraView;
 	// for open&start / stop&close camera preview
 	// for start & stop movie capture
-	private ImageButton mCaptureButton;
-
+	private Button mCaptureButton;
+    private Button mCancelButton;
 	private int mCaptureState = 0;
 	private Surface mPreviewSurface;
 	private String videoPath;
+	TextView timerTextView;
+	long startTime = 0;
+
+	Handler timerHandler = new Handler();
+	Runnable timerRunnable = new Runnable() {
+
+		@Override
+		public void run() {
+			long millis = System.currentTimeMillis() - startTime;
+			int seconds = (int) (millis / 1000);
+			int minutes = seconds / 60;
+			seconds = seconds % 60;
+
+			timerTextView.setText(String.format("%02d", 5- seconds));
+
+
+			timerHandler.postDelayed(this, 500);
+			if (5 - seconds == 0)
+            {
+                stopCapture();
+            }
+		}
+	};
+
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 
-
-
-		mCaptureButton = (ImageButton)findViewById(R.id.capture_button);
+		timerTextView = (TextView) findViewById(R.id.countdown);
+        timerTextView.setVisibility(View.INVISIBLE);
+		mCaptureButton = (Button)findViewById(R.id.camera_button);
 		mCaptureButton.setOnClickListener(mOnClickListener);
 
-		mUVCCameraView = (SimpleUVCCameraTextureView)findViewById(R.id.UVCCameraTextureView1);
+		mCancelButton = (Button)findViewById(R.id.cancel_button);
+        mCancelButton.setOnClickListener(new OnClickListener() {
+                                              @Override
+                                              public void onClick(View view) {
+                                                  finish();
+                                              }
+                                          });
+                mUVCCameraView = (SimpleUVCCameraTextureView) findViewById(R.id.UVCCameraTextureView1);
 		mUVCCameraView.setAspectRatio(UVCCamera.DEFAULT_PREVIEW_WIDTH / (float)UVCCamera.DEFAULT_PREVIEW_HEIGHT);
 		mUVCCameraView.setSurfaceTextureListener(mSurfaceTextureListener);
 
@@ -162,12 +197,14 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	private final OnClickListener mOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(final View v) {
+
 			if (checkPermissionWriteExternalStorage()) {
-				if (mCaptureState == CAPTURE_STOP) {
-					startCapture();
-				} else {
-					stopCapture();
-				}
+			    mCancelButton.setVisibility(View.INVISIBLE);
+			    mCaptureButton.setVisibility(View.INVISIBLE);
+                timerTextView.setVisibility(View.VISIBLE);
+                startTime = System.currentTimeMillis();
+                timerHandler.postDelayed(timerRunnable, 0);
+                startCapture();
 			}
 		}
 	};
@@ -175,7 +212,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	private final OnDeviceConnectListener mOnDeviceConnectListener = new OnDeviceConnectListener() {
 		@Override
 		public void onAttach(final UsbDevice device) {
-			Toast.makeText(MainActivity.this, "USB_DEVICE_ATTACHED", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, "Caméra USB connectée", Toast.LENGTH_SHORT).show();
             startVideo();
 		}
 
@@ -244,7 +281,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 
 		@Override
 		public void onDettach(final UsbDevice device) {
-			Toast.makeText(MainActivity.this, "USB_DEVICE_DETACHED", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, "Caméra USB déconnectée", Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
@@ -274,7 +311,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 			@Override
 			public void run() {
 				if (!isOn && (mCaptureButton != null)) {
-					mCaptureButton.setVisibility(View.INVISIBLE);
+					//mCaptureButton.setVisibility(View.INVISIBLE);
 				}
 			}
 		}, 0);
@@ -396,7 +433,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
     	this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-		    	mCaptureButton.setColorFilter(mCaptureState == CAPTURE_STOP ? 0 : 0xffff0000);
+		    	//mCaptureButton.setColorFilter(mCaptureState == CAPTURE_STOP ? 0 : 0xffff0000);
 			}
     	});
     }

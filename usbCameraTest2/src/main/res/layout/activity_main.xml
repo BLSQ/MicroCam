@@ -48,19 +48,6 @@
         android:layout_alignRight="@+id/UVCCameraTextureView1"
         android:src="@drawable/border" />
 
-    <ImageButton
-        android:id="@+id/capture_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/UVCCameraTextureView1"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="false"
-        android:background="@null"
-        android:padding="3dp"
-        android:scaleType="fitXY"
-        android:src="@android:drawable/ic_menu_camera" />
-
-
     <Button
         android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
@@ -76,5 +63,15 @@
         android:layout_alignBottom="@id/UVCCameraTextureView1"
         android:layout_alignRight="@id/UVCCameraTextureView1"
         android:text="Prendre vidéo" />
+
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="TextView"
+        android:textSize="24sp"
+        tools:text="5S" />
 
 </RelativeLayout>
