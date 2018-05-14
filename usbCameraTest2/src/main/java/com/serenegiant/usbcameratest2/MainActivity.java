@@ -26,7 +26,9 @@ package com.serenegiant.usbcameratest2;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -46,10 +48,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.serenegiant.common.BaseActivity;
 import com.serenegiant.usb.CameraDialog;
+import com.serenegiant.usb.DeviceFilter;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.USBMonitor.OnDeviceConnectListener;
 import com.serenegiant.usb.USBMonitor.UsbControlBlock;
@@ -58,6 +60,7 @@ import com.serenegiant.video.Encoder;
 import com.serenegiant.video.Encoder.EncodeListener;
 import com.serenegiant.video.SurfaceEncoder;
 import com.serenegiant.widget.SimpleUVCCameraTextureView;
+import com.serenegiant.usb.USBMonitor;
 
 public final class MainActivity extends BaseActivity implements CameraDialog.CameraDialogParent {
 	private static final boolean DEBUG = true;	// set false when releasing
@@ -73,7 +76,6 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 	private UVCCamera mUVCCamera;
 	private SimpleUVCCameraTextureView mUVCCameraView;
 	// for open&start / stop&close camera preview
-	private ToggleButton mCameraButton;
 	// for start & stop movie capture
 	private ImageButton mCaptureButton;
 
@@ -86,8 +88,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 
-		mCameraButton = (ToggleButton)findViewById(R.id.camera_button);
-		mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
+
 
 		mCaptureButton = (ImageButton)findViewById(R.id.capture_button);
 		mCaptureButton.setOnClickListener(mOnClickListener);
@@ -138,26 +139,29 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 				mUSBMonitor = null;
 			}
 		}
-		mCameraButton = null;
 		mCaptureButton = null;
 		mUVCCameraView = null;
 		super.onDestroy();
 	}
 
-	private final OnCheckedChangeListener mOnCheckedChangeListener = new OnCheckedChangeListener() {
-		@Override
-		public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-			synchronized (mSync) {
-				if (isChecked && mUVCCamera == null) {
-					CameraDialog.showDialog(MainActivity.this);
-				} else if (mUVCCamera != null) {
-					mUVCCamera.destroy();
-					mUVCCamera = null;
-				}
-			}
-			updateItems();
+	private void startVideo() {
+		if (mUVCCamera == null) {
+		    List<UsbDevice> deviceList =  getUSBMonitor().getDeviceList(DeviceFilter.getDeviceFilters(this, com.serenegiant.uvccamera.R.xml.device_filter));
+			if (deviceList.size() >1)
+            {
+                CameraDialog.showDialog(MainActivity.this);
+            }
+		    else {
+			    UsbDevice device = deviceList.get(0);
+                mUSBMonitor.requestPermission(device);
+            }
 		}
-	};
+	}
+
+	private void stopVideo() {
+        mUVCCamera.destroy();
+        mUVCCamera = null;
+    }
 
 	private final OnClickListener mOnClickListener = new OnClickListener() {
 		@Override
@@ -176,6 +180,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		@Override
 		public void onAttach(final UsbDevice device) {
 			Toast.makeText(MainActivity.this, "USB_DEVICE_ATTACHED", Toast.LENGTH_SHORT).show();
+            startVideo();
 		}
 
 		@Override
@@ -215,6 +220,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 					}
 					synchronized (mSync) {
 						mUVCCamera = camera;
+
 					}
 				}
 			}, 0);
@@ -271,14 +277,6 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				if (mCameraButton != null) {
-					try {
-						mCameraButton.setOnCheckedChangeListener(null);
-						mCameraButton.setChecked(isOn);
-					} finally {
-						mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
-					}
-				}
 				if (!isOn && (mCaptureButton != null)) {
 					mCaptureButton.setVisibility(View.INVISIBLE);
 				}
@@ -402,7 +400,6 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
     	this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				mCaptureButton.setVisibility(mCameraButton.isChecked() ? View.VISIBLE : View.INVISIBLE);
 		    	mCaptureButton.setColorFilter(mCaptureState == CAPTURE_STOP ? 0 : 0xffff0000);
 			}
     	});
