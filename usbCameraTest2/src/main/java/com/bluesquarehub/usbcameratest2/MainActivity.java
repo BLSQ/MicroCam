@@ -21,12 +21,11 @@
  *  may have a different license, see the respective files.
  */
 
-package com.serenegiant.usbcameratest2;
+package com.bluesquarehub.usbcameratest2;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -44,11 +43,12 @@ import android.view.TextureView.SurfaceTextureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.bluesquarehub.microcam.R;
+import com.bluesquarehub.video.Encoder;
+import com.bluesquarehub.widget.SimpleUVCCameraTextureView;
 import com.serenegiant.common.BaseActivity;
 import com.serenegiant.usb.CameraDialog;
 import com.serenegiant.usb.DeviceFilter;
@@ -56,11 +56,7 @@ import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.USBMonitor.OnDeviceConnectListener;
 import com.serenegiant.usb.USBMonitor.UsbControlBlock;
 import com.serenegiant.usb.UVCCamera;
-import com.serenegiant.video.Encoder;
-import com.serenegiant.video.Encoder.EncodeListener;
-import com.serenegiant.video.SurfaceEncoder;
-import com.serenegiant.widget.SimpleUVCCameraTextureView;
-import com.serenegiant.usb.USBMonitor;
+import com.bluesquarehub.video.SurfaceEncoder;
 
 public final class MainActivity extends BaseActivity implements CameraDialog.CameraDialogParent {
 	private static final boolean DEBUG = true;	// set false when releasing
@@ -371,7 +367,7 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
     /**
      * callbackds from Encoder
      */
-    private final EncodeListener mEncodeListener = new EncodeListener() {
+    private final Encoder.EncodeListener mEncodeListener = new Encoder.EncodeListener() {
 		@Override
 		public void onPreapared(final Encoder encoder) {
 			if (DEBUG) Log.v(TAG, "onPreapared:");

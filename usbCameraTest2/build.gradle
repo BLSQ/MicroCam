@@ -35,7 +35,7 @@ android {
     defaultConfig {
         applicationId "com.serenegiant.usbcameratest2"
         minSdkVersion 18
-		targetSdkVersion versionTarget
+		targetSdkVersion 23
 		versionCode 8
 		versionName "3.00"
     }
