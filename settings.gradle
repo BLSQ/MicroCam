@@ -23,5 +23,5 @@
 
 include ':libuvccamera'
 include ':usbCameraCommon'
-include ':usbCameraTest2'
+include ':microCam'
 

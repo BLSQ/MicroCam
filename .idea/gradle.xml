@@ -10,8 +10,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/libuvccamera" />
+            <option value="$PROJECT_DIR$/microCam" />
             <option value="$PROJECT_DIR$/usbCameraCommon" />
-            <option value="$PROJECT_DIR$/usbCameraTest2" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

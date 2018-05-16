@@ -21,7 +21,7 @@
  *  may have a different license, see the respective files.
  */
 
-package com.bluesquarehub.usbcameratest2;
+package com.bluesquarehub.microcam;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,11 +45,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bluesquarehub.microcam.R;
 import com.bluesquarehub.video.Encoder;
 import com.bluesquarehub.widget.SimpleUVCCameraTextureView;
 import com.serenegiant.common.BaseActivity;
@@ -144,7 +142,10 @@ public final class MainActivity extends BaseActivity implements CameraDialog.Cam
 		setCameraButton(false);
 		updateItems();
 	}
-
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
 	@Override
 	protected void onStop() {
 		synchronized (mSync) {

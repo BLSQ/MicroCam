@@ -4,8 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UVCCamera.iml" filepath="$PROJECT_DIR$/UVCCamera.iml" />
       <module fileurl="file://$PROJECT_DIR$/libuvccamera/libuvccamera.iml" filepath="$PROJECT_DIR$/libuvccamera/libuvccamera.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microCam/microCam.iml" filepath="$PROJECT_DIR$/microCam/microCam.iml" />
       <module fileurl="file://$PROJECT_DIR$/usbCameraCommon/usbCameraCommon.iml" filepath="$PROJECT_DIR$/usbCameraCommon/usbCameraCommon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/usbCameraTest2/usbCameraTest2.iml" filepath="$PROJECT_DIR$/usbCameraTest2/usbCameraTest2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microCam/usbCameraTest2.iml" filepath="$PROJECT_DIR$/microCam/usbCameraTest2.iml" />
     </modules>
   </component>
 </project>
