@@ -33,16 +33,16 @@ android {
 	}
 
     defaultConfig {
-        applicationId "com.serenegiant.usbcameratest2"
+        applicationId "com.bluesquarehub.microcam"
         minSdkVersion 18
 		targetSdkVersion 23
-		versionCode 8
-		versionName "3.00"
+		versionCode 10
+		versionName "1.02"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
     }
