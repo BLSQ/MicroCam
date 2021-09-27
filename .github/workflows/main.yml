@@ -25,7 +25,9 @@ jobs:
 
       - name: build
         run: |
-          ./gradlew assembleDebug --stacktrace
+          cd microCam
+          gradle build
+          #./gradlew assembleDebug --stacktrace
 
 #      - uses: actions/upload-artifact@v2
 #        with:
