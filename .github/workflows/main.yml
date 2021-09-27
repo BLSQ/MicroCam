@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - '!v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Environment info
+        run: |
+          gradle --version
+
+      - name: build
+        run: |
+          ./gradlew assembleDebug --stacktrace
+
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: flycatcher-apk-${{github.run_number}}-${{github.sha}}
+#          path: ./app/build/outputs/**/*.apk
+
+      - name: slack notification
+        uses: rtCamp/action-slack-notify@v2.0.2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: sleeping-sickness
+          SLACK_TITLE: MicroCam app build completed
+
