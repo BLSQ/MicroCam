@@ -19,6 +19,15 @@ jobs:
         with:
           java-version: 1.8
 
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r21e
+#        - runs: ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk
+
+      - run: echo ndk.dir=$ANDROID_NDK_HOME > local.properties
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
       - name: Environment info
         run: |
           gradle --version
@@ -28,6 +37,8 @@ jobs:
           cd MicroCam
           gradle build
           #./gradlew assembleDebug --stacktrace
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
 #      - uses: actions/upload-artifact@v2
 #        with:
